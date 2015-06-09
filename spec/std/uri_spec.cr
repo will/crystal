@@ -1,9 +1,11 @@
 require "spec"
 require "uri"
 
-private def assert_uri(string, scheme = nil, host = nil, port = nil, path = nil, query = nil)
+private def assert_uri(string, scheme = nil, host = nil, port = nil, path = nil, query = nil, user = nil, password = nil)
   it "parse #{string}" do
     uri = URI.parse(string)
+    pp uri
+    pp string
     uri.scheme.should eq(scheme)
     uri.host.should eq(host)
     uri.port.should eq(port)
@@ -20,6 +22,7 @@ describe "URI" do
   assert_uri("http://www.google.com?q=1", scheme: "http", host: "www.google.com", query: "q=1")
   assert_uri("https://www.google.com", scheme: "https", host: "www.google.com")
   assert_uri("http://www.foo-bar.com", scheme: "http", host: "www.foo-bar.com")
+  assert_uri("postgres://user:pass@host/", scheme: "postgres", host: "host", user: "user", password: "pass" )
   assert_uri("/foo", path: "/foo")
   assert_uri("/foo?q=1", path: "/foo", query: "q=1")
 
