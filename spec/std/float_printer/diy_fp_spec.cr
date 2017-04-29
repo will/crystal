@@ -85,6 +85,16 @@ describe DiyFP do
     fp.frac.should eq 1
   end
 
+  it "converst min f32" do
+    min = 0x00000001_u32
+    f = pointerof(min).as(Float32*).value
+    fp = DiyFP.from_f(f)
+
+    fp.exp.should eq -0x7F - 23 + 1
+    # This is a denormal; so no hidden bit.
+    fp.frac.should eq 1
+  end
+
   it "converts max f64" do
     max = 0x7fefffffffffffff_u64
     f = pointerof(max).as(Float64*).value
@@ -94,6 +104,17 @@ describe DiyFP do
 
     fp.exp.should eq 0x7FE - 0x3FF - 52
     fp.frac.should eq 0x001fffffffffffff_u64
+  end
+
+  it "converts max f32" do
+    max = 0x7f7fffff_u64
+    f = pointerof(max).as(Float32*).value
+    f.should eq 3.4028234e38_f32 # ensure byte order
+
+    fp = DiyFP.from_f(f)
+
+    fp.exp.should eq 0xFE - 0x7F - 23
+    fp.frac.should eq 0x00ffffff_u64
   end
 
   it "normalizes ordered" do

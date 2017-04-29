@@ -39,7 +39,7 @@ module FloatPrinter::IEEE
   DENORMAL_EXPONENT_64         = -EXPONENT_BIAS_64 + 1
   SIGN_MASK_64                 = 0x8000000000000000_u64
 
-  EXPONENT_MASK_32             = 0x7FF00000_u32
+  EXPONENT_MASK_32             = 0x7F800000_u32
   SIGNIFICAND_MASK_32          = 0x007FFFFF_u32
   HIDDEN_BIT_32                = 0x00800000_u32
   PHYSICAL_SIGNIFICAND_SIZE_32 =             23 # Excludes the hidden bit
