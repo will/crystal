@@ -8,9 +8,13 @@ private def gen_bound(v : UInt64)
   gen_bound(f)
 end
 
-private def gen_bound(v : Float64)
-  a = DiyFP.from_f64(v)
-  fp = DiyFP.from_f64_normalized(v)
+private def gen_bound(v : UInt32)
+  f = pointerof(v).as(Float32*).value
+  gen_bound(f)
+end
+
+private def gen_bound(v : Float64 | Float32)
+  fp = DiyFP.from_f_normalized(v)
   b = IEEE.normalized_boundaries(v)
   b[:minus].exp.should eq fp.exp
   b[:plus].exp.should eq fp.exp
@@ -18,7 +22,8 @@ private def gen_bound(v : Float64)
   return fp.frac, b[:minus].frac, b[:plus].frac
 end
 
-describe "boundaires" do
+
+describe "Float64 boundaires" do
   it "boundaries 1.5" do
     fp, mi, pl = gen_bound(1.5)
     # 1.5 does not have a significand of the form 2^p (for some p).
@@ -64,6 +69,16 @@ describe "boundaires" do
     # max-value does not have a significand of the form 2^p (for some p).
     # Therefore its boundaries are at the same distance.
     (fp - mi).should eq(pl - fp)
+    (fp - mi).should eq(1 << 10)
+  end
+end
+
+describe "Float32 boundaires" do
+  it "boundaries 1.5" do
+    fp, mi, pl = gen_bound(1.5_f32)
+    # 1.5 does not have a significand of the form 2^p (for some p).
+    # Therefore its boundaries are at the same distance.
+    (pl - fp).should eq(fp - mi)
     (fp - mi).should eq(1 << 10)
   end
 end
